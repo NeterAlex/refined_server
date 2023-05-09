@@ -14,6 +14,8 @@ _testmain.go
 *.exe
 *.exe~
 *.test
+*.jpg
+*.png
 *.prof
 *.rar
 *.zip
