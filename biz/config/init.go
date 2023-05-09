@@ -14,6 +14,7 @@ func Init() {
 	viper.SetDefault("server.host", "localhost")
 	viper.SetDefault("server.port", "8022")
 	viper.SetDefault("database.sqlite.file", "biz/dal/database/refined.db")
+	viper.SetDefault("jwt.secretkey", "F54d|CX1v")
 	err = viper.ReadInConfig()
 	if err != nil {
 		panic(fmt.Errorf("Fatal error in reading config file: %s\n", err))

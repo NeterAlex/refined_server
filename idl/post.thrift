@@ -16,8 +16,8 @@ struct Post{
     5:required string date
     6:required string tags
     7:required string image_url
-    8:optional i64 viewed
-    9:optional list<comment.Comment> comments
+    8:required i64 viewed
+    9:required list<comment.Comment> comments
     10:required i64 userID
 }
 

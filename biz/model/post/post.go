@@ -71,8 +71,8 @@ type Post struct {
 	Date     string             `thrift:"date,5,required" form:"date,required" json:"date,required" query:"date,required"`
 	Tags     string             `thrift:"tags,6,required" form:"tags,required" json:"tags,required" query:"tags,required"`
 	ImageURL string             `thrift:"image_url,7,required" form:"image_url,required" json:"image_url,required" query:"image_url,required"`
-	Viewed   *int64             `thrift:"viewed,8,optional" form:"viewed" json:"viewed,omitempty" query:"viewed"`
-	Comments []*comment.Comment `thrift:"comments,9,optional" form:"comments" json:"comments,omitempty" query:"comments"`
+	Viewed   int64              `thrift:"viewed,8,required" form:"viewed,required" json:"viewed,required" query:"viewed,required"`
+	Comments []*comment.Comment `thrift:"comments,9,required" form:"comments,required" json:"comments,required" query:"comments,required"`
 	UserID   int64              `thrift:"userID,10,required" form:"userID,required" json:"userID,required" query:"userID,required"`
 }
 
@@ -108,21 +108,11 @@ func (p *Post) GetImageURL() (v string) {
 	return p.ImageURL
 }
 
-var Post_Viewed_DEFAULT int64
-
 func (p *Post) GetViewed() (v int64) {
-	if !p.IsSetViewed() {
-		return Post_Viewed_DEFAULT
-	}
-	return *p.Viewed
+	return p.Viewed
 }
 
-var Post_Comments_DEFAULT []*comment.Comment
-
 func (p *Post) GetComments() (v []*comment.Comment) {
-	if !p.IsSetComments() {
-		return Post_Comments_DEFAULT
-	}
 	return p.Comments
 }
 
@@ -143,14 +133,6 @@ var fieldIDToName_Post = map[int16]string{
 	10: "userID",
 }
 
-func (p *Post) IsSetViewed() bool {
-	return p.Viewed != nil
-}
-
-func (p *Post) IsSetComments() bool {
-	return p.Comments != nil
-}
-
 func (p *Post) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
@@ -162,6 +144,8 @@ func (p *Post) Read(iprot thrift.TProtocol) (err error) {
 	var issetDate bool = false
 	var issetTags bool = false
 	var issetImageURL bool = false
+	var issetViewed bool = false
+	var issetComments bool = false
 	var issetUserID bool = false
 
 	if _, err = iprot.ReadStructBegin(); err != nil {
@@ -260,6 +244,7 @@ func (p *Post) Read(iprot thrift.TProtocol) (err error) {
 				if err = p.ReadField8(iprot); err != nil {
 					goto ReadFieldError
 				}
+				issetViewed = true
 			} else {
 				if err = iprot.Skip(fieldTypeId); err != nil {
 					goto SkipFieldError
@@ -270,6 +255,7 @@ func (p *Post) Read(iprot thrift.TProtocol) (err error) {
 				if err = p.ReadField9(iprot); err != nil {
 					goto ReadFieldError
 				}
+				issetComments = true
 			} else {
 				if err = iprot.Skip(fieldTypeId); err != nil {
 					goto SkipFieldError
@@ -332,6 +318,16 @@ func (p *Post) Read(iprot thrift.TProtocol) (err error) {
 
 	if !issetImageURL {
 		fieldId = 7
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetViewed {
+		fieldId = 8
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetComments {
+		fieldId = 9
 		goto RequiredFieldNotSetError
 	}
 
@@ -424,7 +420,7 @@ func (p *Post) ReadField8(iprot thrift.TProtocol) error {
 	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
-		p.Viewed = &v
+		p.Viewed = v
 	}
 	return nil
 }
@@ -643,16 +639,14 @@ WriteFieldEndError:
 }
 
 func (p *Post) writeField8(oprot thrift.TProtocol) (err error) {
-	if p.IsSetViewed() {
-		if err = oprot.WriteFieldBegin("viewed", thrift.I64, 8); err != nil {
-			goto WriteFieldBeginError
-		}
-		if err := oprot.WriteI64(*p.Viewed); err != nil {
-			return err
-		}
-		if err = oprot.WriteFieldEnd(); err != nil {
-			goto WriteFieldEndError
-		}
+	if err = oprot.WriteFieldBegin("viewed", thrift.I64, 8); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.Viewed); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
 	}
 	return nil
 WriteFieldBeginError:
@@ -662,24 +656,22 @@ WriteFieldEndError:
 }
 
 func (p *Post) writeField9(oprot thrift.TProtocol) (err error) {
-	if p.IsSetComments() {
-		if err = oprot.WriteFieldBegin("comments", thrift.LIST, 9); err != nil {
-			goto WriteFieldBeginError
-		}
-		if err := oprot.WriteListBegin(thrift.STRUCT, len(p.Comments)); err != nil {
+	if err = oprot.WriteFieldBegin("comments", thrift.LIST, 9); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteListBegin(thrift.STRUCT, len(p.Comments)); err != nil {
+		return err
+	}
+	for _, v := range p.Comments {
+		if err := v.Write(oprot); err != nil {
 			return err
 		}
-		for _, v := range p.Comments {
-			if err := v.Write(oprot); err != nil {
-				return err
-			}
-		}
-		if err := oprot.WriteListEnd(); err != nil {
-			return err
-		}
-		if err = oprot.WriteFieldEnd(); err != nil {
-			goto WriteFieldEndError
-		}
+	}
+	if err := oprot.WriteListEnd(); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
 	}
 	return nil
 WriteFieldBeginError:
@@ -713,10 +705,10 @@ func (p *Post) String() string {
 }
 
 type CreatePostRequest struct {
-	Title    string `thrift:"title,1" form:"title" json:"title" vd:"(len($)>0)"`
+	Title    string `thrift:"title,1" form:"title" form:"title" json:"title" vd:"(len($)>0)"`
 	Content  string `thrift:"content,2" form:"content" form:"content" json:"content"`
 	Author   string `thrift:"author,3" form:"author" json:"author" vd:"(len($)>0)"`
-	Date     string `thrift:"date,4" form:"date" form:"date" json:"date" vd:"(len($)>0)"`
+	Date     string `thrift:"date,4" form:"date" json:"date" vd:"(len($)>0)"`
 	Tags     string `thrift:"tags,5" form:"tags" json:"tags"`
 	ImageURL string `thrift:"image_url,6" form:"image_url" json:"image_url"`
 }
@@ -1263,7 +1255,7 @@ func (p *CreatePostResponse) String() string {
 }
 
 type QueryPostRequest struct {
-	ID       *string `thrift:"id,1,optional" form:"id" form:"id" json:"id,omitempty" path:"id" query:"id"`
+	ID       *string `thrift:"id,1,optional" form:"id" json:"id,omitempty" path:"id" query:"id"`
 	Page     int64   `thrift:"page,2" form:"page" json:"page" query:"page" vd:"$ > 0"`
 	PageSize int64   `thrift:"page_size,3" form:"page_size" json:"page_size" query:"page_size" vd:"$ > 0"`
 }
@@ -2117,7 +2109,7 @@ func (p *DeletePostResponse) String() string {
 }
 
 type UpdatePostRequest struct {
-	Title    string `thrift:"title,1" form:"title" json:"title" vd:"(len($)>0)"`
+	Title    string `thrift:"title,1" form:"title" form:"title" json:"title" vd:"(len($)>0)"`
 	Content  string `thrift:"content,2" form:"content" json:"content"`
 	Author   string `thrift:"author,3" form:"author" json:"author" vd:"(len($)>0)"`
 	Date     string `thrift:"date,4" form:"date" json:"date" vd:"(len($)>0)"`

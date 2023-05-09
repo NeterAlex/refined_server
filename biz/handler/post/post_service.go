@@ -113,6 +113,7 @@ func CreatePost(ctx context.Context, c *app.RequestContext) {
 			Date:     req.Date,
 			Tags:     req.Tags,
 			ImageURL: req.ImageURL,
+			Viewed:   0,
 			UserID:   1,
 		},
 	}); err != nil {

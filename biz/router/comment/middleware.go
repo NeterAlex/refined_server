@@ -3,8 +3,12 @@
 package comment
 
 import (
+	"Refined_service/biz/middleware"
 	"github.com/cloudwego/hertz/pkg/app"
+	"github.com/spf13/viper"
 )
+
+var jwt = middleware.AuthInit(viper.GetString("jwt.secretkey"))
 
 func rootMw() []app.HandlerFunc {
 	// your code...
@@ -22,8 +26,9 @@ func _commentMw() []app.HandlerFunc {
 }
 
 func _deleteMw() []app.HandlerFunc {
-	// your code...
-	return nil
+	return []app.HandlerFunc{
+		jwt.MiddlewareFunc(),
+	}
 }
 
 func _deletecommentMw() []app.HandlerFunc {
@@ -42,11 +47,23 @@ func _querycommentMw() []app.HandlerFunc {
 }
 
 func _updateMw() []app.HandlerFunc {
+	return []app.HandlerFunc{
+		jwt.MiddlewareFunc(),
+	}
+}
+
+func _updatecommentMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
 
-func _updatecommentMw() []app.HandlerFunc {
+func _createMw() []app.HandlerFunc {
+	return []app.HandlerFunc{
+		jwt.MiddlewareFunc(),
+	}
+}
+
+func _createcommentMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }

@@ -3,8 +3,12 @@
 package user
 
 import (
+	"Refined_service/biz/middleware"
 	"github.com/cloudwego/hertz/pkg/app"
+	"github.com/spf13/viper"
 )
+
+var jwt = middleware.AuthInit(viper.GetString("jwt.secretkey"))
 
 func rootMw() []app.HandlerFunc {
 	// your code...
@@ -22,8 +26,9 @@ func _userMw() []app.HandlerFunc {
 }
 
 func _createMw() []app.HandlerFunc {
-	// your code...
-	return nil
+	return []app.HandlerFunc{
+		jwt.MiddlewareFunc(),
+	}
 }
 
 func _createuserMw() []app.HandlerFunc {
@@ -32,8 +37,9 @@ func _createuserMw() []app.HandlerFunc {
 }
 
 func _deleteMw() []app.HandlerFunc {
-	// your code...
-	return nil
+	return []app.HandlerFunc{
+		jwt.MiddlewareFunc(),
+	}
 }
 
 func _deleteuserMw() []app.HandlerFunc {
@@ -52,8 +58,9 @@ func _queryuserMw() []app.HandlerFunc {
 }
 
 func _updateMw() []app.HandlerFunc {
-	// your code...
-	return nil
+	return []app.HandlerFunc{
+		jwt.MiddlewareFunc(),
+	}
 }
 
 func _updateuserMw() []app.HandlerFunc {

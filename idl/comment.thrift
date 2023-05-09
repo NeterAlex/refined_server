@@ -17,7 +17,7 @@ struct Comment{
 struct CreateCommentRequest{
     1: string author (api.body="author",api.form="author",api.vd="(len($)>0)")
     2: string content (api.body="content",api.form="content",api.vd="(len($)>0)")
-    3: i64 postID (api.body="postID",api.form="postID",api.vd="(len($)>0)")
+    3: i64 postID (api.body="postID",api.form="postID")
 }
 
 struct CreateCommentResponse{
@@ -50,7 +50,8 @@ struct DeleteCommentResponse{
 struct UpdateCommentRequest{
     1: string author (api.body="author",api.form="author",api.vd="(len($)>0)")
     2: string content (api.body="content",api.form="content",api.vd="(len($)>0)")
-    3: i64 id (api.body="id",api.form="id",api.vd="(len($)>0)")
+    3: i64 id (api.body="id",api.form="id",api.path="id")
+    4: i64 cid (api.body="cid",api.form="cid")
 }
 
 struct UpdateCommentResponse{
@@ -59,8 +60,8 @@ struct UpdateCommentResponse{
 }
 
 service CommentService{
+    CreateCommentResponse CreateComment(1:CreateCommentRequest req)(api.post="/v1/comment/create/")
     UpdateCommentResponse UpdateComment(1:UpdateCommentRequest req)(api.put="/v1/comment/update/:id")
     DeleteCommentResponse DeleteComment(1:DeleteCommentRequest req)(api.delete="/v1/comment/delete/:id")
     QueryCommentResponse  QueryComment(1:QueryCommentRequest req)(api.get="/v1/comment/query/")
-    CreateCommentResponse CreateComment(1:CreateCommentRequest req)(api.comment="/v1/comment/create/")
 }
