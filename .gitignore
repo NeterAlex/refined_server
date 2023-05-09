@@ -39,5 +39,3 @@ _testmain.go
 /output
 *.local.yml
 dumped_hertz_remote_config.json
-
-/static/
