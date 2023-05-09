@@ -45,7 +45,6 @@ func AuthInit(secretKey string) *jwt.HertzJWTMiddleware {
 			username := loginVals.Username
 			password := loginVals.Password
 
-			//TODO
 			//Check if username matches password
 			if pack.CheckAuthValid(username, password) {
 				u, _, err := sqlite.Query[user.User]("username = ?", username)
