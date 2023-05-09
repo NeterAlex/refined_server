@@ -17,6 +17,7 @@ struct Comment{
 struct CreateCommentRequest{
     1: string author (api.body="author",api.form="author",api.vd="(len($)>0)")
     2: string content (api.body="content",api.form="content",api.vd="(len($)>0)")
+    3: i64 postID (api.body="postID",api.form="postID",api.vd="(len($)>0)")
 }
 
 struct CreateCommentResponse{
@@ -49,6 +50,7 @@ struct DeleteCommentResponse{
 struct UpdateCommentRequest{
     1: string author (api.body="author",api.form="author",api.vd="(len($)>0)")
     2: string content (api.body="content",api.form="content",api.vd="(len($)>0)")
+    3: i64 postID (api.body="postID",api.form="postID",api.vd="(len($)>0)")
 }
 
 struct UpdateCommentResponse{

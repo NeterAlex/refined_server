@@ -1,15 +1,93 @@
 info:
   contact: { }
 paths:
+  /v1/comment/create/:
+    post:
+      parameters:
+        - description: 作者
+          in: body
+          name: author
+          required: true
+          schema:
+            type: string
+        - description: 内容
+          in: body
+          name: content
+          required: true
+          schema:
+            type: string
+        - description: 所属文章id
+          in: body
+          name: postID
+          required: true
+          schema:
+            type: string
+      produces:
+        - application/json
+      responses: { }
+      summary: 创建评论
   /v1/comment/delete/:id:
     delete:
+      parameters:
+        - description: 评论id
+          in: path
+          name: id
+          required: true
+          type: string
+      produces:
+        - application/json
       responses: { }
+      summary: 删除评论
   /v1/comment/query/:
     get:
+      parameters:
+        - description: 文章ID
+          in: body
+          name: id
+          required: true
+          schema:
+            type: string
+        - description: 页码
+          in: body
+          name: page
+          required: true
+          schema:
+            type: string
+        - description: 页面大小
+          in: body
+          name: page_size
+          required: true
+          schema:
+            type: string
+      produces:
+        - application/json
       responses: { }
+      summary: 查询评论
   /v1/comment/update/:id:
     put:
+      parameters:
+        - description: 作者
+          in: body
+          name: author
+          required: true
+          schema:
+            type: string
+        - description: 内容
+          in: body
+          name: content
+          required: true
+          schema:
+            type: string
+        - description: 所属文章id
+          in: body
+          name: postID
+          required: true
+          schema:
+            type: string
+      produces:
+        - application/json
       responses: { }
+      summary: 更新评论
   /v1/post/create/:
     post:
       parameters:
@@ -206,5 +284,42 @@ paths:
       summary: 查询用户
   /v1/user/update/:id:
     put:
+      parameters:
+        - description: 用户ID(可选)
+          in: query
+          name: id
+          type: string
+        - description: 用户名
+          in: body
+          name: username
+          required: true
+          schema:
+            type: string
+        - description: 密码
+          in: body
+          name: password
+          required: true
+          schema:
+            type: string
+        - description: 昵称
+          in: body
+          name: nickname
+          required: true
+          schema:
+            type: string
+        - description: Email
+          in: body
+          name: email
+          required: true
+          schema:
+            type: string
+        - description: 手机号
+          in: body
+          name: phone
+          schema:
+            type: string
+      produces:
+        - application/json
       responses: { }
+      summary: 更新用户
 swagger: "2.0"

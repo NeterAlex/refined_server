@@ -14,6 +14,14 @@ import (
 )
 
 // UpdateUser .
+// @Summary 更新用户
+// @Produce json
+// @Param id query string false "用户ID(可选)"
+// @Param username body string true "用户名"
+// @Param password body string true "密码"
+// @Param nickname body string true "昵称"
+// @Param email body string true "Email"
+// @Param phone body string false "手机号"
 // @router /v1/user/update/:id [PUT]
 func UpdateUser(ctx context.Context, c *app.RequestContext) {
 	var err error
