@@ -1,0 +1,6 @@
+database:
+  sqlite:
+    file: biz/dal/database/refined.db
+server:
+  host: localhost
+  port: "8022"
