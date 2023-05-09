@@ -7,6 +7,7 @@ import (
 	"Refined_service/biz/dal"
 	_ "Refined_service/docs"
 	"fmt"
+	"github.com/cloudwego/hertz/pkg/app/middlewares/server/recovery"
 	"github.com/cloudwego/hertz/pkg/app/server"
 	"github.com/hertz-contrib/cors"
 	_ "github.com/hertz-contrib/swagger"
@@ -21,13 +22,12 @@ func main() {
 			panic(fmt.Errorf("Fatal error in saving config file: %s\n", err))
 		}
 	}()
-
 	config.Init()
 	dal.Init()
-
 	address := viper.GetString("server.host") + ":" + viper.GetString("server.port")
 	h := server.New(server.WithHostPorts(address))
 	h.Name = "Refined Server"
+	h.Use(recovery.Recovery())
 	h.Use(cors.Default())
 	h.Static("/static", "./")
 	register(h)

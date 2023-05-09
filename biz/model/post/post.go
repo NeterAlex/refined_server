@@ -705,12 +705,12 @@ func (p *Post) String() string {
 }
 
 type CreatePostRequest struct {
-	Title    string `thrift:"title,1" form:"title" form:"title" json:"title" vd:"(len($)>0)"`
-	Content  string `thrift:"content,2" form:"content" form:"content" json:"content"`
+	Title    string `thrift:"title,1" form:"title" json:"title" vd:"(len($)>0)"`
+	Content  string `thrift:"content,2" form:"content" json:"content"`
 	Author   string `thrift:"author,3" form:"author" json:"author" vd:"(len($)>0)"`
 	Date     string `thrift:"date,4" form:"date" json:"date" vd:"(len($)>0)"`
 	Tags     string `thrift:"tags,5" form:"tags" json:"tags"`
-	ImageURL string `thrift:"image_url,6" form:"image_url" json:"image_url"`
+	ImageURL string `thrift:"image_url,6" form:"image_url" form:"image_url" json:"image_url"`
 }
 
 func NewCreatePostRequest() *CreatePostRequest {
@@ -1255,22 +1255,17 @@ func (p *CreatePostResponse) String() string {
 }
 
 type QueryPostRequest struct {
-	ID       *string `thrift:"id,1,optional" form:"id" json:"id,omitempty" path:"id" query:"id"`
-	Page     int64   `thrift:"page,2" form:"page" json:"page" query:"page" vd:"$ > 0"`
-	PageSize int64   `thrift:"page_size,3" form:"page_size" json:"page_size" query:"page_size" vd:"$ > 0"`
+	ID       string `thrift:"id,1" form:"id" form:"id" json:"id" path:"id" query:"id"`
+	Page     int64  `thrift:"page,2" form:"page" form:"page" json:"page" query:"page" vd:"$ > 0"`
+	PageSize int64  `thrift:"page_size,3" form:"page_size" form:"page_size" json:"page_size" query:"page_size" vd:"$ > 0"`
 }
 
 func NewQueryPostRequest() *QueryPostRequest {
 	return &QueryPostRequest{}
 }
 
-var QueryPostRequest_ID_DEFAULT string
-
 func (p *QueryPostRequest) GetID() (v string) {
-	if !p.IsSetID() {
-		return QueryPostRequest_ID_DEFAULT
-	}
-	return *p.ID
+	return p.ID
 }
 
 func (p *QueryPostRequest) GetPage() (v int64) {
@@ -1285,10 +1280,6 @@ var fieldIDToName_QueryPostRequest = map[int16]string{
 	1: "id",
 	2: "page",
 	3: "page_size",
-}
-
-func (p *QueryPostRequest) IsSetID() bool {
-	return p.ID != nil
 }
 
 func (p *QueryPostRequest) Read(iprot thrift.TProtocol) (err error) {
@@ -1374,7 +1365,7 @@ func (p *QueryPostRequest) ReadField1(iprot thrift.TProtocol) error {
 	if v, err := iprot.ReadString(); err != nil {
 		return err
 	} else {
-		p.ID = &v
+		p.ID = v
 	}
 	return nil
 }
@@ -1435,16 +1426,14 @@ WriteStructEndError:
 }
 
 func (p *QueryPostRequest) writeField1(oprot thrift.TProtocol) (err error) {
-	if p.IsSetID() {
-		if err = oprot.WriteFieldBegin("id", thrift.STRING, 1); err != nil {
-			goto WriteFieldBeginError
-		}
-		if err := oprot.WriteString(*p.ID); err != nil {
-			return err
-		}
-		if err = oprot.WriteFieldEnd(); err != nil {
-			goto WriteFieldEndError
-		}
+	if err = oprot.WriteFieldBegin("id", thrift.STRING, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteString(p.ID); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
 	}
 	return nil
 WriteFieldBeginError:
@@ -2109,12 +2098,12 @@ func (p *DeletePostResponse) String() string {
 }
 
 type UpdatePostRequest struct {
-	Title    string `thrift:"title,1" form:"title" form:"title" json:"title" vd:"(len($)>0)"`
-	Content  string `thrift:"content,2" form:"content" json:"content"`
+	Title    string `thrift:"title,1" form:"title" json:"title" vd:"(len($)>0)"`
+	Content  string `thrift:"content,2" form:"content" form:"content" json:"content"`
 	Author   string `thrift:"author,3" form:"author" json:"author" vd:"(len($)>0)"`
 	Date     string `thrift:"date,4" form:"date" json:"date" vd:"(len($)>0)"`
 	Tags     string `thrift:"tags,5" form:"tags" json:"tags"`
-	ImageURL string `thrift:"image_url,6" form:"image_url" json:"image_url"`
+	ImageURL string `thrift:"image_url,6" form:"image_url" form:"image_url" json:"image_url"`
 }
 
 func NewUpdatePostRequest() *UpdatePostRequest {

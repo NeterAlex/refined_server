@@ -33,7 +33,7 @@ struct CreateUserResponse{
 }
 
 struct QueryUserRequest{
-    1: optional string id (api.query="id",api.body="id", api.form="id",api.query="id")
+    1: string id (api.query="id",api.body="id", api.form="id",api.query="id")
     2: i64 page (api.query="page",api.body="page", api.form="page",api.query="page",api.vd="$ > 0")
     3: i64 page_size (api.query="page_size",api.body="page_size", api.form="page_size",api.query="page_size",api.vd="$ > 0")
 }

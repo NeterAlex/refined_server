@@ -80,7 +80,14 @@ func QueryUser(ctx context.Context, c *app.RequestContext) {
 		c.JSON(consts.StatusOK, &user.QueryUserResponse{Code: user.Code_ParamInvalid, Msg: err.Error()})
 		return
 	}
-	users, total, err := sqlite.QueryExclude[user.User]("id = ?", *req.ID, "password")
+	var users []*user.User
+	var total int64
+	if req.ID == "0" {
+		users, total, err = sqlite.QueryAllExclude[user.User]("password", req.Page, req.GetPageSize())
+	} else {
+		users, total, err = sqlite.QueryExclude[user.User]("id = ?", req.ID, "password")
+	}
+
 	if err != nil {
 		c.JSON(consts.StatusOK, &user.QueryUserResponse{Code: user.Code_DbError, Msg: err.Error()})
 		return

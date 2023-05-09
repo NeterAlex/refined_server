@@ -610,7 +610,7 @@ type CreateUserRequest struct {
 	Username string  `thrift:"username,1" form:"username" json:"username" vd:"(len($)>0 && len($)<20)"`
 	Password string  `thrift:"password,2" form:"password" json:"password" vd:"(len($)>6 && len($)<18)"`
 	Nickname string  `thrift:"nickname,3" form:"nickname" json:"nickname" vd:"(len($)>0 && len($)<20)"`
-	Email    string  `thrift:"email,4" form:"email" form:"email" json:"email" vd:"(len($)>0)"`
+	Email    string  `thrift:"email,4" form:"email" json:"email" vd:"(len($)>0)"`
 	Phone    *string `thrift:"phone,5,optional" form:"phone" json:"phone,omitempty"`
 }
 
@@ -1122,22 +1122,17 @@ func (p *CreateUserResponse) String() string {
 }
 
 type QueryUserRequest struct {
-	ID       *string `thrift:"id,1,optional" form:"id" form:"id" json:"id,omitempty" query:"id"`
-	Page     int64   `thrift:"page,2" form:"page" json:"page" query:"page" vd:"$ > 0"`
-	PageSize int64   `thrift:"page_size,3" form:"page_size" form:"page_size" json:"page_size" query:"page_size" vd:"$ > 0"`
+	ID       string `thrift:"id,1" form:"id" form:"id" json:"id" query:"id"`
+	Page     int64  `thrift:"page,2" form:"page" json:"page" query:"page" vd:"$ > 0"`
+	PageSize int64  `thrift:"page_size,3" form:"page_size" form:"page_size" json:"page_size" query:"page_size" vd:"$ > 0"`
 }
 
 func NewQueryUserRequest() *QueryUserRequest {
 	return &QueryUserRequest{}
 }
 
-var QueryUserRequest_ID_DEFAULT string
-
 func (p *QueryUserRequest) GetID() (v string) {
-	if !p.IsSetID() {
-		return QueryUserRequest_ID_DEFAULT
-	}
-	return *p.ID
+	return p.ID
 }
 
 func (p *QueryUserRequest) GetPage() (v int64) {
@@ -1152,10 +1147,6 @@ var fieldIDToName_QueryUserRequest = map[int16]string{
 	1: "id",
 	2: "page",
 	3: "page_size",
-}
-
-func (p *QueryUserRequest) IsSetID() bool {
-	return p.ID != nil
 }
 
 func (p *QueryUserRequest) Read(iprot thrift.TProtocol) (err error) {
@@ -1241,7 +1232,7 @@ func (p *QueryUserRequest) ReadField1(iprot thrift.TProtocol) error {
 	if v, err := iprot.ReadString(); err != nil {
 		return err
 	} else {
-		p.ID = &v
+		p.ID = v
 	}
 	return nil
 }
@@ -1302,16 +1293,14 @@ WriteStructEndError:
 }
 
 func (p *QueryUserRequest) writeField1(oprot thrift.TProtocol) (err error) {
-	if p.IsSetID() {
-		if err = oprot.WriteFieldBegin("id", thrift.STRING, 1); err != nil {
-			goto WriteFieldBeginError
-		}
-		if err := oprot.WriteString(*p.ID); err != nil {
-			return err
-		}
-		if err = oprot.WriteFieldEnd(); err != nil {
-			goto WriteFieldEndError
-		}
+	if err = oprot.WriteFieldBegin("id", thrift.STRING, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteString(p.ID); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
 	}
 	return nil
 WriteFieldBeginError:
@@ -1980,7 +1969,7 @@ type UpdateUserRequest struct {
 	Username string  `thrift:"username,2" form:"username" json:"username" vd:"(len($)>0 && len($)<20)"`
 	Password string  `thrift:"password,3" form:"password" json:"password" vd:"(len($)>6 && len($)<18)"`
 	Nickname string  `thrift:"nickname,4" form:"nickname" form:"nickname" json:"nickname" vd:"(len($)>0 && len($)<20)"`
-	Email    string  `thrift:"email,5" form:"email" form:"email" json:"email" vd:"(len($)>0)"`
+	Email    string  `thrift:"email,5" form:"email" json:"email" vd:"(len($)>0)"`
 	Phone    *string `thrift:"phone,6,optional" form:"phone" json:"phone,omitempty"`
 }
 
