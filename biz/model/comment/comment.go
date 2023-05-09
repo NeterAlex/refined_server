@@ -369,7 +369,7 @@ func (p *Comment) String() string {
 type CreateCommentRequest struct {
 	Author  string `thrift:"author,1" form:"author" json:"author" vd:"(len($)>0)"`
 	Content string `thrift:"content,2" form:"content" json:"content" vd:"(len($)>0)"`
-	PostID  int64  `thrift:"postID,3" form:"postID" form:"postID" json:"postID" vd:"(len($)>0)"`
+	PostID  int64  `thrift:"postID,3" form:"postID" json:"postID" vd:"(len($)>0)"`
 }
 
 func NewCreateCommentRequest() *CreateCommentRequest {
@@ -1635,7 +1635,7 @@ func (p *DeleteCommentResponse) String() string {
 type UpdateCommentRequest struct {
 	Author  string `thrift:"author,1" form:"author" form:"author" json:"author" vd:"(len($)>0)"`
 	Content string `thrift:"content,2" form:"content" json:"content" vd:"(len($)>0)"`
-	PostID  int64  `thrift:"postID,3" form:"postID" json:"postID" vd:"(len($)>0)"`
+	ID      int64  `thrift:"id,3" form:"id" json:"id" vd:"(len($)>0)"`
 }
 
 func NewUpdateCommentRequest() *UpdateCommentRequest {
@@ -1650,14 +1650,14 @@ func (p *UpdateCommentRequest) GetContent() (v string) {
 	return p.Content
 }
 
-func (p *UpdateCommentRequest) GetPostID() (v int64) {
-	return p.PostID
+func (p *UpdateCommentRequest) GetID() (v int64) {
+	return p.ID
 }
 
 var fieldIDToName_UpdateCommentRequest = map[int16]string{
 	1: "author",
 	2: "content",
-	3: "postID",
+	3: "id",
 }
 
 func (p *UpdateCommentRequest) Read(iprot thrift.TProtocol) (err error) {
@@ -1761,7 +1761,7 @@ func (p *UpdateCommentRequest) ReadField3(iprot thrift.TProtocol) error {
 	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
-		p.PostID = v
+		p.ID = v
 	}
 	return nil
 }
@@ -1838,10 +1838,10 @@ WriteFieldEndError:
 }
 
 func (p *UpdateCommentRequest) writeField3(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("postID", thrift.I64, 3); err != nil {
+	if err = oprot.WriteFieldBegin("id", thrift.I64, 3); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI64(p.PostID); err != nil {
+	if err := oprot.WriteI64(p.ID); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
