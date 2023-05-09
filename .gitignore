@@ -17,6 +17,8 @@ _testmain.go
 *.prof
 *.rar
 *.zip
+*.yml
+*.db
 *.gz
 *.psd
 *.bmd
