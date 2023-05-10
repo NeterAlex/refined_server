@@ -13,7 +13,7 @@ type AuthClaim struct {
 	jwt.StandardClaims
 }
 
-func AdminPermissionCheck() []app.HandlerFunc {
+func AdminCheck() []app.HandlerFunc {
 	return []app.HandlerFunc{
 		func(ctx context.Context, c *app.RequestContext) {
 			token := c.Request.Header.Get("Authorization")[7:]

@@ -5,6 +5,7 @@ package main
 import (
 	handler "Refined_service/biz/handler"
 	"Refined_service/biz/handler/file"
+	"Refined_service/biz/handler/user"
 	"Refined_service/biz/middleware"
 	"github.com/cloudwego/hertz/pkg/app/server"
 	"github.com/hertz-contrib/swagger"
@@ -26,6 +27,12 @@ func customizedRegister(r *server.Hertz) {
 			{
 				_file.Use(jwt.MiddlewareFunc())
 				_file.POST("/avatar/:id", file.AvatarUpload)
+			}
+			_user := _v1.Group("user")
+			{
+				_user.Use(jwt.MiddlewareFunc())
+				_user.Use(middleware.AdminCheck()...)
+				_user.GET("/verify", user.AdminCheckService)
 			}
 			_auth := _v1.Group("/auth")
 			{
