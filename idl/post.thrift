@@ -48,6 +48,15 @@ struct QueryPostResponse{
     4: i64 total
 }
 
+struct LatestPostRequest{
+}
+
+struct LatestPostResponse{
+    1:Code code
+    2:string msg
+    3:Post post
+}
+
 struct DeletePostRequest{
     1: i64 id (api.path="id",api.vd="$>0")
 }
@@ -86,4 +95,5 @@ service PostService{
     QueryPostResponse  QueryPost(1:QueryPostRequest req)(api.get="/v1/post/query/")
     CreatePostResponse CreatePost(1:CreatePostRequest req)(api.post="/v1/post/create/")
     ViewPostResponse ViewPost(1:ViewPostRequest req)(api.get="/v1/post/view/:id")
+    LatestPostResponse LatestPost()(api.get="v1/post/query/latest")
 }

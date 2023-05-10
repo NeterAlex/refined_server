@@ -32,6 +32,7 @@ func Register(r *server.Hertz) {
 			{
 				_query := _post.Group("/query", _queryMw()...)
 				_query.GET("/", append(_querypostMw(), post.QueryPost)...)
+				_query.GET("/latest", append(_latestpostMw(), post.LatestPost)...)
 			}
 			{
 				_update := _post.Group("/update", _updateMw()...)

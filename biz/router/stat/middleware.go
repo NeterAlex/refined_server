@@ -21,9 +21,7 @@ func _v1Mw() []app.HandlerFunc {
 }
 
 func _statMw() []app.HandlerFunc {
-	return []app.HandlerFunc{
-		jwt.MiddlewareFunc(),
-	}
+	return nil
 }
 
 func _querystatMw() []app.HandlerFunc {

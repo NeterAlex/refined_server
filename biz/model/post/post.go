@@ -707,10 +707,10 @@ func (p *Post) String() string {
 type CreatePostRequest struct {
 	Title    string `thrift:"title,1" form:"title" json:"title" vd:"(len($)>0)"`
 	Content  string `thrift:"content,2" form:"content" json:"content"`
-	Author   string `thrift:"author,3" form:"author" json:"author" vd:"(len($)>0)"`
+	Author   string `thrift:"author,3" form:"author" form:"author" json:"author" vd:"(len($)>0)"`
 	Date     string `thrift:"date,4" form:"date" json:"date" vd:"(len($)>0)"`
-	Tags     string `thrift:"tags,5" form:"tags" json:"tags"`
-	ImageURL string `thrift:"image_url,6" form:"image_url" form:"image_url" json:"image_url"`
+	Tags     string `thrift:"tags,5" form:"tags" form:"tags" json:"tags"`
+	ImageURL string `thrift:"image_url,6" form:"image_url" json:"image_url"`
 }
 
 func NewCreatePostRequest() *CreatePostRequest {
@@ -1256,8 +1256,8 @@ func (p *CreatePostResponse) String() string {
 
 type QueryPostRequest struct {
 	ID       string `thrift:"id,1" form:"id" form:"id" json:"id" path:"id" query:"id"`
-	Page     int64  `thrift:"page,2" form:"page" form:"page" json:"page" query:"page" vd:"$ > 0"`
-	PageSize int64  `thrift:"page_size,3" form:"page_size" form:"page_size" json:"page_size" query:"page_size" vd:"$ > 0"`
+	Page     int64  `thrift:"page,2" form:"page" json:"page" query:"page" vd:"$ > 0"`
+	PageSize int64  `thrift:"page_size,3" form:"page_size" json:"page_size" query:"page_size" vd:"$ > 0"`
 }
 
 func NewQueryPostRequest() *QueryPostRequest {
@@ -1777,6 +1777,324 @@ func (p *QueryPostResponse) String() string {
 	return fmt.Sprintf("QueryPostResponse(%+v)", *p)
 }
 
+type LatestPostRequest struct {
+}
+
+func NewLatestPostRequest() *LatestPostRequest {
+	return &LatestPostRequest{}
+}
+
+var fieldIDToName_LatestPostRequest = map[int16]string{}
+
+func (p *LatestPostRequest) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+		if err = iprot.Skip(fieldTypeId); err != nil {
+			goto SkipFieldTypeError
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+SkipFieldTypeError:
+	return thrift.PrependError(fmt.Sprintf("%T skip field type %d error", p, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *LatestPostRequest) Write(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteStructBegin("LatestPostRequest"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *LatestPostRequest) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("LatestPostRequest(%+v)", *p)
+}
+
+type LatestPostResponse struct {
+	Code Code   `thrift:"code,1" form:"code" json:"code" query:"code"`
+	Msg  string `thrift:"msg,2" form:"msg" json:"msg" query:"msg"`
+	Post *Post  `thrift:"post,3" form:"post" json:"post" query:"post"`
+}
+
+func NewLatestPostResponse() *LatestPostResponse {
+	return &LatestPostResponse{}
+}
+
+func (p *LatestPostResponse) GetCode() (v Code) {
+	return p.Code
+}
+
+func (p *LatestPostResponse) GetMsg() (v string) {
+	return p.Msg
+}
+
+var LatestPostResponse_Post_DEFAULT *Post
+
+func (p *LatestPostResponse) GetPost() (v *Post) {
+	if !p.IsSetPost() {
+		return LatestPostResponse_Post_DEFAULT
+	}
+	return p.Post
+}
+
+var fieldIDToName_LatestPostResponse = map[int16]string{
+	1: "code",
+	2: "msg",
+	3: "post",
+}
+
+func (p *LatestPostResponse) IsSetPost() bool {
+	return p.Post != nil
+}
+
+func (p *LatestPostResponse) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.I32 {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		case 2:
+			if fieldTypeId == thrift.STRING {
+				if err = p.ReadField2(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		case 3:
+			if fieldTypeId == thrift.STRUCT {
+				if err = p.ReadField3(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_LatestPostResponse[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *LatestPostResponse) ReadField1(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI32(); err != nil {
+		return err
+	} else {
+		p.Code = Code(v)
+	}
+	return nil
+}
+
+func (p *LatestPostResponse) ReadField2(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadString(); err != nil {
+		return err
+	} else {
+		p.Msg = v
+	}
+	return nil
+}
+
+func (p *LatestPostResponse) ReadField3(iprot thrift.TProtocol) error {
+	p.Post = NewPost()
+	if err := p.Post.Read(iprot); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *LatestPostResponse) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("LatestPostResponse"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+		if err = p.writeField2(oprot); err != nil {
+			fieldId = 2
+			goto WriteFieldError
+		}
+		if err = p.writeField3(oprot); err != nil {
+			fieldId = 3
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *LatestPostResponse) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("code", thrift.I32, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI32(int32(p.Code)); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *LatestPostResponse) writeField2(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("msg", thrift.STRING, 2); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteString(p.Msg); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
+}
+
+func (p *LatestPostResponse) writeField3(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("post", thrift.STRUCT, 3); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := p.Post.Write(oprot); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 3 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 3 end error: ", p), err)
+}
+
+func (p *LatestPostResponse) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("LatestPostResponse(%+v)", *p)
+}
+
 type DeletePostRequest struct {
 	ID int64 `thrift:"id,1" json:"id" path:"id" vd:"$>0"`
 }
@@ -2103,7 +2421,7 @@ type UpdatePostRequest struct {
 	Author   string `thrift:"author,3" form:"author" json:"author" vd:"(len($)>0)"`
 	Date     string `thrift:"date,4" form:"date" json:"date" vd:"(len($)>0)"`
 	Tags     string `thrift:"tags,5" form:"tags" json:"tags"`
-	ImageURL string `thrift:"image_url,6" form:"image_url" form:"image_url" json:"image_url"`
+	ImageURL string `thrift:"image_url,6" form:"image_url" json:"image_url"`
 }
 
 func NewUpdatePostRequest() *UpdatePostRequest {
@@ -2985,6 +3303,8 @@ type PostService interface {
 	CreatePost(ctx context.Context, req *CreatePostRequest) (r *CreatePostResponse, err error)
 
 	ViewPost(ctx context.Context, req *ViewPostRequest) (r *ViewPostResponse, err error)
+
+	LatestPost(ctx context.Context) (r *LatestPostResponse, err error)
 }
 
 type PostServiceClient struct {
@@ -3058,6 +3378,14 @@ func (p *PostServiceClient) ViewPost(ctx context.Context, req *ViewPostRequest) 
 	}
 	return _result.GetSuccess(), nil
 }
+func (p *PostServiceClient) LatestPost(ctx context.Context) (r *LatestPostResponse, err error) {
+	var _args PostServiceLatestPostArgs
+	var _result PostServiceLatestPostResult
+	if err = p.Client_().Call(ctx, "LatestPost", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
 
 type PostServiceProcessor struct {
 	processorMap map[string]thrift.TProcessorFunction
@@ -3084,6 +3412,7 @@ func NewPostServiceProcessor(handler PostService) *PostServiceProcessor {
 	self.AddToProcessorMap("QueryPost", &postServiceProcessorQueryPost{handler: handler})
 	self.AddToProcessorMap("CreatePost", &postServiceProcessorCreatePost{handler: handler})
 	self.AddToProcessorMap("ViewPost", &postServiceProcessorViewPost{handler: handler})
+	self.AddToProcessorMap("LatestPost", &postServiceProcessorLatestPost{handler: handler})
 	return self
 }
 func (p *PostServiceProcessor) Process(ctx context.Context, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
@@ -3327,6 +3656,54 @@ func (p *postServiceProcessorViewPost) Process(ctx context.Context, seqId int32,
 		result.Success = retval
 	}
 	if err2 = oprot.WriteMessageBegin("ViewPost", thrift.REPLY, seqId); err2 != nil {
+		err = err2
+	}
+	if err2 = result.Write(oprot); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 = oprot.WriteMessageEnd(); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 = oprot.Flush(ctx); err == nil && err2 != nil {
+		err = err2
+	}
+	if err != nil {
+		return
+	}
+	return true, err
+}
+
+type postServiceProcessorLatestPost struct {
+	handler PostService
+}
+
+func (p *postServiceProcessorLatestPost) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
+	args := PostServiceLatestPostArgs{}
+	if err = args.Read(iprot); err != nil {
+		iprot.ReadMessageEnd()
+		x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err.Error())
+		oprot.WriteMessageBegin("LatestPost", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Flush(ctx)
+		return false, err
+	}
+
+	iprot.ReadMessageEnd()
+	var err2 error
+	result := PostServiceLatestPostResult{}
+	var retval *LatestPostResponse
+	if retval, err2 = p.handler.LatestPost(ctx); err2 != nil {
+		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing LatestPost: "+err2.Error())
+		oprot.WriteMessageBegin("LatestPost", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Flush(ctx)
+		return true, err2
+	} else {
+		result.Success = retval
+	}
+	if err2 = oprot.WriteMessageBegin("LatestPost", thrift.REPLY, seqId); err2 != nil {
 		err = err2
 	}
 	if err2 = result.Write(oprot); err == nil && err2 != nil {
@@ -4802,4 +5179,232 @@ func (p *PostServiceViewPostResult) String() string {
 		return "<nil>"
 	}
 	return fmt.Sprintf("PostServiceViewPostResult(%+v)", *p)
+}
+
+type PostServiceLatestPostArgs struct {
+}
+
+func NewPostServiceLatestPostArgs() *PostServiceLatestPostArgs {
+	return &PostServiceLatestPostArgs{}
+}
+
+var fieldIDToName_PostServiceLatestPostArgs = map[int16]string{}
+
+func (p *PostServiceLatestPostArgs) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+		if err = iprot.Skip(fieldTypeId); err != nil {
+			goto SkipFieldTypeError
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+SkipFieldTypeError:
+	return thrift.PrependError(fmt.Sprintf("%T skip field type %d error", p, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *PostServiceLatestPostArgs) Write(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteStructBegin("LatestPost_args"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *PostServiceLatestPostArgs) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("PostServiceLatestPostArgs(%+v)", *p)
+}
+
+type PostServiceLatestPostResult struct {
+	Success *LatestPostResponse `thrift:"success,0,optional"`
+}
+
+func NewPostServiceLatestPostResult() *PostServiceLatestPostResult {
+	return &PostServiceLatestPostResult{}
+}
+
+var PostServiceLatestPostResult_Success_DEFAULT *LatestPostResponse
+
+func (p *PostServiceLatestPostResult) GetSuccess() (v *LatestPostResponse) {
+	if !p.IsSetSuccess() {
+		return PostServiceLatestPostResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+var fieldIDToName_PostServiceLatestPostResult = map[int16]string{
+	0: "success",
+}
+
+func (p *PostServiceLatestPostResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *PostServiceLatestPostResult) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 0:
+			if fieldTypeId == thrift.STRUCT {
+				if err = p.ReadField0(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_PostServiceLatestPostResult[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *PostServiceLatestPostResult) ReadField0(iprot thrift.TProtocol) error {
+	p.Success = NewLatestPostResponse()
+	if err := p.Success.Read(iprot); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *PostServiceLatestPostResult) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("LatestPost_result"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField0(oprot); err != nil {
+			fieldId = 0
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *PostServiceLatestPostResult) writeField0(oprot thrift.TProtocol) (err error) {
+	if p.IsSetSuccess() {
+		if err = oprot.WriteFieldBegin("success", thrift.STRUCT, 0); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := p.Success.Write(oprot); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 0 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 0 end error: ", p), err)
+}
+
+func (p *PostServiceLatestPostResult) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("PostServiceLatestPostResult(%+v)", *p)
 }

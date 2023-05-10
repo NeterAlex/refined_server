@@ -148,3 +148,15 @@ func ViewPost(ctx context.Context, c *app.RequestContext) {
 	}
 	c.JSON(consts.StatusOK, &post.ViewPostResponse{Code: post.Code_Success})
 }
+
+// LatestPost .
+// @router v1/post/query/latest [GET]
+func LatestPost(ctx context.Context, c *app.RequestContext) {
+	var res []*post.Post
+	var err error
+	if res, err = sqlite.QueryByOrder[post.Post]("id", "desc", 1); err != nil {
+		c.JSON(consts.StatusOK, &post.LatestPostResponse{Code: post.Code_DbError, Msg: err.Error()})
+		return
+	}
+	c.JSON(consts.StatusOK, &post.LatestPostResponse{Code: post.Code_Success, Post: res[0]})
+}

@@ -77,3 +77,8 @@ func _viewpostMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _latestpostMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}

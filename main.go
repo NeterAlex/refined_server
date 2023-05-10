@@ -13,6 +13,7 @@ import (
 	_ "github.com/hertz-contrib/swagger"
 	"github.com/spf13/viper"
 	_ "github.com/swaggo/files"
+	"time"
 )
 
 func main() {
@@ -28,7 +29,14 @@ func main() {
 	h := server.New(server.WithHostPorts(address))
 	h.Name = "Refined Server"
 	h.Use(recovery.Recovery())
-	h.Use(cors.Default())
+	h.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"*"},
+		AllowHeaders:     []string{"*"},
+		ExposeHeaders:    []string{"*"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	})) // CORS
 	h.Static("/static", "./")
 	register(h)
 	h.Spin()

@@ -65,6 +65,16 @@ func QueryExclude[T comment.Comment | post.Post | user.User | stat.Stat](where, 
 	return res, total, nil
 }
 
+func QueryByOrder[T comment.Comment | post.Post | user.User | stat.Stat](key, order string, limit int) ([]*T, error) {
+	var t T
+	db := DB.Model(t)
+	var res []*T
+	if err := db.Order(key + " " + order).Limit(limit).Find(&res).Error; err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
 func QueryAll[T comment.Comment | post.Post | user.User | stat.Stat](page, pageSize int64) ([]*T, int64, error) {
 	var t T
 	db := DB.Model(t)

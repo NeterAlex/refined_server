@@ -367,9 +367,9 @@ func (p *Comment) String() string {
 }
 
 type CreateCommentRequest struct {
-	Author  string `thrift:"author,1" form:"author" json:"author" vd:"(len($)>0)"`
-	Content string `thrift:"content,2" form:"content" form:"content" json:"content" vd:"(len($)>0)"`
-	PostID  int64  `thrift:"postID,3" form:"postID" form:"postID" json:"postID"`
+	Author  string `thrift:"author,1" form:"author" form:"author" json:"author" vd:"(len($)>0)"`
+	Content string `thrift:"content,2" form:"content" json:"content" vd:"(len($)>0)"`
+	PostID  int64  `thrift:"postID,3" form:"postID" json:"postID"`
 }
 
 func NewCreateCommentRequest() *CreateCommentRequest {
@@ -1634,9 +1634,9 @@ func (p *DeleteCommentResponse) String() string {
 
 type UpdateCommentRequest struct {
 	Author  string `thrift:"author,1" form:"author" json:"author" vd:"(len($)>0)"`
-	Content string `thrift:"content,2" form:"content" json:"content" vd:"(len($)>0)"`
+	Content string `thrift:"content,2" form:"content" form:"content" json:"content" vd:"(len($)>0)"`
 	ID      int64  `thrift:"id,3" form:"id" json:"id" path:"id"`
-	Cid     int64  `thrift:"cid,4" form:"cid" json:"cid"`
+	Cid     int64  `thrift:"cid,4" form:"cid" form:"cid" json:"cid"`
 }
 
 func NewUpdateCommentRequest() *UpdateCommentRequest {
