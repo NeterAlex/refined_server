@@ -34,10 +34,12 @@ func UpdateUser(ctx context.Context, c *app.RequestContext) {
 	u := &user.User{}
 	u.ID = req.ID
 	u.Username = req.Username
-	u.Password = pack.HashSHA256(req.Password)
 	u.Nickname = req.Nickname
 	u.Email = req.Email
 	u.Phone = req.Phone
+	if req.Password != nil && *req.Password != "" {
+		u.Password = pack.HashSHA256(*req.Password)
+	}
 	if err = sqlite.Update[user.User](u.ID, u); err != nil {
 		c.JSON(http.StatusOK, &user.UpdateUserResponse{Code: user.Code_DbError, Msg: err.Error()})
 		return

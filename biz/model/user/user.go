@@ -1122,9 +1122,9 @@ func (p *CreateUserResponse) String() string {
 }
 
 type QueryUserRequest struct {
-	ID       string `thrift:"id,1" form:"id" form:"id" json:"id" query:"id"`
+	ID       string `thrift:"id,1" form:"id" json:"id" query:"id"`
 	Page     int64  `thrift:"page,2" form:"page" json:"page" query:"page" vd:"$ > 0"`
-	PageSize int64  `thrift:"page_size,3" form:"page_size" form:"page_size" json:"page_size" query:"page_size" vd:"$ > 0"`
+	PageSize int64  `thrift:"page_size,3" form:"page_size" json:"page_size" query:"page_size" vd:"$ > 0"`
 }
 
 func NewQueryUserRequest() *QueryUserRequest {
@@ -1967,10 +1967,10 @@ func (p *DeleteUserResponse) String() string {
 type UpdateUserRequest struct {
 	ID       int64   `thrift:"id,1" json:"id" path:"id" vd:"$>0"`
 	Username string  `thrift:"username,2" form:"username" json:"username" vd:"(len($)>0 && len($)<20)"`
-	Password string  `thrift:"password,3" form:"password" json:"password" vd:"(len($)>6 && len($)<18)"`
-	Nickname string  `thrift:"nickname,4" form:"nickname" form:"nickname" json:"nickname" vd:"(len($)>0 && len($)<20)"`
+	Password *string `thrift:"password,3,optional" form:"password" json:"password,omitempty" vd:"(len($)<18)"`
+	Nickname string  `thrift:"nickname,4" form:"nickname" json:"nickname" vd:"(len($)>0 && len($)<20)"`
 	Email    string  `thrift:"email,5" form:"email" json:"email" vd:"(len($)>0)"`
-	Phone    *string `thrift:"phone,6,optional" form:"phone" json:"phone,omitempty"`
+	Phone    *string `thrift:"phone,6,optional" form:"phone" form:"phone" json:"phone,omitempty"`
 }
 
 func NewUpdateUserRequest() *UpdateUserRequest {
@@ -1985,8 +1985,13 @@ func (p *UpdateUserRequest) GetUsername() (v string) {
 	return p.Username
 }
 
+var UpdateUserRequest_Password_DEFAULT string
+
 func (p *UpdateUserRequest) GetPassword() (v string) {
-	return p.Password
+	if !p.IsSetPassword() {
+		return UpdateUserRequest_Password_DEFAULT
+	}
+	return *p.Password
 }
 
 func (p *UpdateUserRequest) GetNickname() (v string) {
@@ -2013,6 +2018,10 @@ var fieldIDToName_UpdateUserRequest = map[int16]string{
 	4: "nickname",
 	5: "email",
 	6: "phone",
+}
+
+func (p *UpdateUserRequest) IsSetPassword() bool {
+	return p.Password != nil
 }
 
 func (p *UpdateUserRequest) IsSetPhone() bool {
@@ -2150,7 +2159,7 @@ func (p *UpdateUserRequest) ReadField3(iprot thrift.TProtocol) error {
 	if v, err := iprot.ReadString(); err != nil {
 		return err
 	} else {
-		p.Password = v
+		p.Password = &v
 	}
 	return nil
 }
@@ -2266,14 +2275,16 @@ WriteFieldEndError:
 }
 
 func (p *UpdateUserRequest) writeField3(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("password", thrift.STRING, 3); err != nil {
-		goto WriteFieldBeginError
-	}
-	if err := oprot.WriteString(p.Password); err != nil {
-		return err
-	}
-	if err = oprot.WriteFieldEnd(); err != nil {
-		goto WriteFieldEndError
+	if p.IsSetPassword() {
+		if err = oprot.WriteFieldBegin("password", thrift.STRING, 3); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := oprot.WriteString(*p.Password); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
 	}
 	return nil
 WriteFieldBeginError:

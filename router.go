@@ -4,6 +4,7 @@ package main
 
 import (
 	handler "Refined_service/biz/handler"
+	"Refined_service/biz/handler/file"
 	"Refined_service/biz/middleware"
 	"github.com/cloudwego/hertz/pkg/app/server"
 	"github.com/hertz-contrib/swagger"
@@ -16,10 +17,16 @@ var jwt = middleware.AuthInit(viper.GetString("jwt.secretkey"))
 func customizedRegister(r *server.Hertz) {
 	r.GET("/ping", handler.Ping)
 	r.GET("/swagger/*any", swagger.WrapHandler(swaggerFiles.Handler, swagger.URL("http://localhost:8022/swagger/doc.json")))
+
 	root := r.Group("/")
 	{
 		_v1 := root.Group("/v1")
 		{
+			_file := _v1.Group("/file")
+			{
+				_file.Use(jwt.MiddlewareFunc())
+				_file.POST("/avatar/:id", file.AvatarUpload)
+			}
 			_auth := _v1.Group("/auth")
 			{
 				_auth.POST("/login", jwt.LoginHandler)

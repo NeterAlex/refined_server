@@ -12,12 +12,16 @@ struct Comment{
     2:required string author
     3:required string content
     4:required i64 postID
+    5:required i64 userID
+    6:required string date
 }
 
 struct CreateCommentRequest{
     1: string author (api.body="author",api.form="author",api.vd="(len($)>0)")
     2: string content (api.body="content",api.form="content",api.vd="(len($)>0)")
     3: i64 postID (api.body="postID",api.form="postID")
+    4: i64 userID (api.body="userID",api.form="userID")
+    5: string date (api.body="date",api.form="date")
 }
 
 struct CreateCommentResponse{
@@ -52,6 +56,8 @@ struct UpdateCommentRequest{
     2: string content (api.body="content",api.form="content",api.vd="(len($)>0)")
     3: i64 id (api.body="id",api.form="id",api.path="id")
     4: i64 cid (api.body="cid",api.form="cid")
+    5: i64 userID (api.body="userID",api.form="userID")
+    6: string date (api.body="date",api.form="date")
 }
 
 struct UpdateCommentResponse{

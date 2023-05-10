@@ -84,7 +84,7 @@ func QueryPost(ctx context.Context, c *app.RequestContext) {
 	if req.ID == "0" {
 		posts, total, err = sqlite.QueryAll[post.Post](req.Page, req.PageSize)
 	} else {
-		posts, total, err = sqlite.Query[post.Post]("id = ?", req.ID)
+		posts, total, err = sqlite.QueryBasic[post.Post]("id = ?", req.ID)
 	}
 	if err != nil {
 		c.JSON(consts.StatusOK, &post.QueryPostResponse{Code: post.Code_DbError, Msg: err.Error()})

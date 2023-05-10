@@ -57,7 +57,7 @@ struct DeleteUserResponse{
 struct UpdateUserRequest{
     1: i64 id (api.path="id",api.vd="$>0")
     2: string username (api.body="username",api.form="username",api.vd="(len($)>0 && len($)<20)")
-    3: string password (api.body="password",api.form="password",api.vd="(len($)>6 && len($)<18)")
+    3: optional string password (api.body="password",api.form="password",api.vd="(len($)<18)")
     4: string nickname (api.body="nickname",api.form="nickname",api.vd="(len($)>0 && len($)<20)")
     5: string email (api.body="email",api.form="email",api.vd="(len($)>0)")
     6: optional string phone (api.body="phone",api.form="phone")

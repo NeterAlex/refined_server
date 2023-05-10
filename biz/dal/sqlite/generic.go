@@ -31,7 +31,26 @@ func Count[T comment.Comment | post.Post | user.User | stat.Stat]() (int64, erro
 	return total, nil
 }
 
-func Query[T comment.Comment | post.Post | user.User | stat.Stat](where, value string) ([]*T, int64, error) {
+func Query[T comment.Comment | post.Post | user.User | stat.Stat](query map[string]interface{}) ([]*T, int64, error) {
+	var t T
+	db := DB.Model(t)
+	if query != nil {
+		for k, v := range query {
+			db = db.Or(k, v)
+		}
+	}
+	var total int64
+	if err := db.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+	var res []*T
+	if err := db.Find(&res).Error; err != nil {
+		return nil, 0, err
+	}
+	return res, total, nil
+}
+
+func QueryBasic[T comment.Comment | post.Post | user.User | stat.Stat](where string, value string) ([]*T, int64, error) {
 	var t T
 	db := DB.Model(t)
 	if where != "" && value != "" {
