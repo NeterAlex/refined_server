@@ -475,7 +475,7 @@ func (p *Comment) String() string {
 type CreateCommentRequest struct {
 	Author  string `thrift:"author,1" form:"author" json:"author" vd:"(len($)>0)"`
 	Content string `thrift:"content,2" form:"content" json:"content" vd:"(len($)>0)"`
-	PostID  int64  `thrift:"postID,3" form:"postID" json:"postID"`
+	PostID  int64  `thrift:"postID,3" form:"postID" form:"postID" json:"postID"`
 	UserID  int64  `thrift:"userID,4" form:"userID" json:"userID"`
 	Date    string `thrift:"date,5" form:"date" json:"date"`
 }
@@ -977,9 +977,9 @@ func (p *CreateCommentResponse) String() string {
 }
 
 type QueryCommentRequest struct {
-	ID       *string `thrift:"id,1,optional" form:"id" json:"id,omitempty" query:"id"`
+	ID       *string `thrift:"id,1,optional" form:"id" form:"id" json:"id,omitempty" query:"id"`
 	Page     int64   `thrift:"page,2" form:"page" json:"page" query:"page" vd:"$ > 0"`
-	PageSize int64   `thrift:"page_size,3" form:"page_size" form:"page_size" json:"page_size" query:"page_size" vd:"$ > 0"`
+	PageSize int64   `thrift:"page_size,3" form:"page_size" json:"page_size" query:"page_size" vd:"$ > 0"`
 }
 
 func NewQueryCommentRequest() *QueryCommentRequest {
@@ -1834,7 +1834,7 @@ type UpdateCommentRequest struct {
 	Author  string `thrift:"author,1" form:"author" json:"author" vd:"(len($)>0)"`
 	Content string `thrift:"content,2" form:"content" json:"content" vd:"(len($)>0)"`
 	ID      int64  `thrift:"id,3" form:"id" form:"id" json:"id" path:"id"`
-	Cid     int64  `thrift:"cid,4" form:"cid" json:"cid"`
+	Cid     int64  `thrift:"cid,4" form:"cid" form:"cid" json:"cid"`
 	UserID  int64  `thrift:"userID,5" form:"userID" json:"userID"`
 	Date    string `thrift:"date,6" form:"date" json:"date"`
 }

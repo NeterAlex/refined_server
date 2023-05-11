@@ -6,7 +6,7 @@ import (
 )
 
 func CheckAuthValid(username, password string) bool {
-	u, _, err := sqlite.QueryBasic[user.User]("username = ?", username)
+	u, _, err := sqlite.Query[user.User]("username = ?", username)
 	if err != nil {
 		return false
 	}

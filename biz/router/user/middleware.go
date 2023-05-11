@@ -26,9 +26,7 @@ func _userMw() []app.HandlerFunc {
 }
 
 func _createMw() []app.HandlerFunc {
-	return []app.HandlerFunc{
-		jwt.MiddlewareFunc(),
-	}
+	return nil
 }
 
 func _createuserMw() []app.HandlerFunc {

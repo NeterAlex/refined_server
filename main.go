@@ -10,6 +10,8 @@ import (
 	"github.com/cloudwego/hertz/pkg/app/middlewares/server/recovery"
 	"github.com/cloudwego/hertz/pkg/app/server"
 	"github.com/hertz-contrib/cors"
+	"github.com/hertz-contrib/gzip"
+	"github.com/hertz-contrib/logger/accesslog"
 	_ "github.com/hertz-contrib/swagger"
 	"github.com/spf13/viper"
 	_ "github.com/swaggo/files"
@@ -28,15 +30,24 @@ func main() {
 	address := viper.GetString("server.host") + ":" + viper.GetString("server.port")
 	h := server.New(server.WithHostPorts(address))
 	h.Name = "Refined Server"
+
+	//Recovery
 	h.Use(recovery.Recovery())
+	//Gzip
+	h.Use(gzip.Gzip(gzip.DefaultCompression, gzip.WithExcludedExtensions([]string{".svg"})))
+	//CORS
 	h.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"},
-		AllowMethods:     []string{"*"},
+		AllowMethods:     []string{"GET,PUT,POST,DELETE"},
 		AllowHeaders:     []string{"*"},
 		ExposeHeaders:    []string{"*"},
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
-	})) // CORS
+	}))
+	//Logger
+	h.Use(accesslog.New())
+
+	//Router
 	h.Static("/static", "./")
 	register(h)
 	h.Spin()

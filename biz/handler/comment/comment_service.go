@@ -75,7 +75,7 @@ func QueryComment(ctx context.Context, c *app.RequestContext) {
 		c.JSON(consts.StatusOK, &comment.QueryCommentResponse{Code: comment.Code_ParamInvalid, Msg: err.Error()})
 		return
 	}
-	comments, total, err := sqlite.QueryBasic[comment.Comment]("post_id = ?", *req.ID)
+	comments, total, err := sqlite.Query[comment.Comment]("post_id = ?", *req.ID)
 	if err != nil {
 		c.JSON(consts.StatusOK, &comment.QueryCommentResponse{Code: comment.Code_DbError, Msg: err.Error()})
 		return

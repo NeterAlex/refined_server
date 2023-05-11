@@ -73,6 +73,7 @@ struct UpdatePostRequest{
     4: string date (api.body="date",api.form="date",api.vd="(len($)>0)")
     5: string tags (api.body="tags",api.form="tags")
     6: string image_url (api.body="image_url",api.form="image_url")
+    7: string id (api.body="id",api.form="id",api.path="id")
 }
 
 struct UpdatePostResponse{

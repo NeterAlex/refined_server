@@ -710,7 +710,7 @@ type CreatePostRequest struct {
 	Author   string `thrift:"author,3" form:"author" json:"author" vd:"(len($)>0)"`
 	Date     string `thrift:"date,4" form:"date" json:"date" vd:"(len($)>0)"`
 	Tags     string `thrift:"tags,5" form:"tags" json:"tags"`
-	ImageURL string `thrift:"image_url,6" form:"image_url" form:"image_url" json:"image_url"`
+	ImageURL string `thrift:"image_url,6" form:"image_url" json:"image_url"`
 }
 
 func NewCreatePostRequest() *CreatePostRequest {
@@ -1257,7 +1257,7 @@ func (p *CreatePostResponse) String() string {
 type QueryPostRequest struct {
 	ID       string `thrift:"id,1" form:"id" json:"id" path:"id" query:"id"`
 	Page     int64  `thrift:"page,2" form:"page" json:"page" query:"page" vd:"$ > 0"`
-	PageSize int64  `thrift:"page_size,3" form:"page_size" form:"page_size" json:"page_size" query:"page_size" vd:"$ > 0"`
+	PageSize int64  `thrift:"page_size,3" form:"page_size" json:"page_size" query:"page_size" vd:"$ > 0"`
 }
 
 func NewQueryPostRequest() *QueryPostRequest {
@@ -2417,11 +2417,12 @@ func (p *DeletePostResponse) String() string {
 
 type UpdatePostRequest struct {
 	Title    string `thrift:"title,1" form:"title" json:"title" vd:"(len($)>0)"`
-	Content  string `thrift:"content,2" form:"content" json:"content"`
-	Author   string `thrift:"author,3" form:"author" json:"author" vd:"(len($)>0)"`
+	Content  string `thrift:"content,2" form:"content" form:"content" json:"content"`
+	Author   string `thrift:"author,3" form:"author" form:"author" json:"author" vd:"(len($)>0)"`
 	Date     string `thrift:"date,4" form:"date" form:"date" json:"date" vd:"(len($)>0)"`
 	Tags     string `thrift:"tags,5" form:"tags" json:"tags"`
 	ImageURL string `thrift:"image_url,6" form:"image_url" json:"image_url"`
+	ID       string `thrift:"id,7" form:"id" json:"id" path:"id"`
 }
 
 func NewUpdatePostRequest() *UpdatePostRequest {
@@ -2452,6 +2453,10 @@ func (p *UpdatePostRequest) GetImageURL() (v string) {
 	return p.ImageURL
 }
 
+func (p *UpdatePostRequest) GetID() (v string) {
+	return p.ID
+}
+
 var fieldIDToName_UpdatePostRequest = map[int16]string{
 	1: "title",
 	2: "content",
@@ -2459,6 +2464,7 @@ var fieldIDToName_UpdatePostRequest = map[int16]string{
 	4: "date",
 	5: "tags",
 	6: "image_url",
+	7: "id",
 }
 
 func (p *UpdatePostRequest) Read(iprot thrift.TProtocol) (err error) {
@@ -2533,6 +2539,16 @@ func (p *UpdatePostRequest) Read(iprot thrift.TProtocol) (err error) {
 		case 6:
 			if fieldTypeId == thrift.STRING {
 				if err = p.ReadField6(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		case 7:
+			if fieldTypeId == thrift.STRING {
+				if err = p.ReadField7(iprot); err != nil {
 					goto ReadFieldError
 				}
 			} else {
@@ -2624,6 +2640,15 @@ func (p *UpdatePostRequest) ReadField6(iprot thrift.TProtocol) error {
 	return nil
 }
 
+func (p *UpdatePostRequest) ReadField7(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadString(); err != nil {
+		return err
+	} else {
+		p.ID = v
+	}
+	return nil
+}
+
 func (p *UpdatePostRequest) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
 	if err = oprot.WriteStructBegin("UpdatePostRequest"); err != nil {
@@ -2652,6 +2677,10 @@ func (p *UpdatePostRequest) Write(oprot thrift.TProtocol) (err error) {
 		}
 		if err = p.writeField6(oprot); err != nil {
 			fieldId = 6
+			goto WriteFieldError
+		}
+		if err = p.writeField7(oprot); err != nil {
+			fieldId = 7
 			goto WriteFieldError
 		}
 
@@ -2773,6 +2802,23 @@ WriteFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 6 begin error: ", p), err)
 WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 6 end error: ", p), err)
+}
+
+func (p *UpdatePostRequest) writeField7(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("id", thrift.STRING, 7); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteString(p.ID); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 7 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 7 end error: ", p), err)
 }
 
 func (p *UpdatePostRequest) String() string {

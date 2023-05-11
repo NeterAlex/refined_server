@@ -38,8 +38,12 @@ func UpdatePost(ctx context.Context, c *app.RequestContext) {
 	p.Date = req.Date
 	p.Tags = req.Tags
 	p.ImageURL = req.ImageURL
-
-	if err = sqlite.Update[post.Post](p.ID, p); err != nil {
+	id, err := strconv.ParseInt(req.ID, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusOK, &post.UpdatePostResponse{Code: post.Code_ParamInvalid, Msg: err.Error()})
+		return
+	}
+	if err = sqlite.Update[post.Post](id, p); err != nil {
 		c.JSON(http.StatusOK, &post.UpdatePostResponse{Code: post.Code_DbError, Msg: err.Error()})
 		return
 	}
@@ -82,9 +86,9 @@ func QueryPost(ctx context.Context, c *app.RequestContext) {
 	var posts []*post.Post
 	var total int64
 	if req.ID == "0" {
-		posts, total, err = sqlite.QueryAll[post.Post](req.Page, req.PageSize)
+		posts, total, err = sqlite.QueryPreloadAll[post.Post](req.Page, req.PageSize, "Comments")
 	} else {
-		posts, total, err = sqlite.QueryBasic[post.Post]("id = ?", req.ID)
+		posts, total, err = sqlite.Query[post.Post]("id = ?", req.ID)
 	}
 	if err != nil {
 		c.JSON(consts.StatusOK, &post.QueryPostResponse{Code: post.Code_DbError, Msg: err.Error()})
