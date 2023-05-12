@@ -25,7 +25,6 @@ func customizedRegister(r *server.Hertz) {
 		{
 			_file := _v1.Group("/file")
 			{
-				_file.Use(jwt.MiddlewareFunc())
 				_file.POST("/avatar/:id", file.AvatarUpload)
 			}
 			_user := _v1.Group("user")

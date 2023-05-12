@@ -9,7 +9,7 @@ ENV GO111MODULE=on \
 
 WORKDIR /refined_server
 #COPY biz/config/config.yml ./app/biz/config/
-COPY biz/config/config.yml ./config/
+COPY config/config.yml ./config/
 COPY biz/dal/database/refined.db ./biz/dal/database/
 COPY out/* ./
 

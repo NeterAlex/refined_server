@@ -58,9 +58,7 @@ func _updatecommentMw() []app.HandlerFunc {
 }
 
 func _createMw() []app.HandlerFunc {
-	return []app.HandlerFunc{
-		jwt.MiddlewareFunc(),
-	}
+	return nil
 }
 
 func _createcommentMw() []app.HandlerFunc {
