@@ -1,4 +1,4 @@
-package sqlite
+package sql
 
 import (
 	"Refined_service/biz/model/comment"
@@ -14,7 +14,7 @@ var DB *gorm.DB
 
 func Init() {
 	var err error
-	dbfile := viper.GetString("database.sqlite.file")
+	dbfile := viper.GetString("database.sql.file")
 	DB, err = gorm.Open(sqlite.Open(dbfile), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Warn),
 	})

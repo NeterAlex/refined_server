@@ -1,7 +1,7 @@
 package dal
 
-import "Refined_service/biz/dal/sqlite"
+import "Refined_service/biz/dal/sql"
 
 func Init() {
-	sqlite.Init()
+	sql.Init()
 }

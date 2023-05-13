@@ -15,7 +15,7 @@ func Init() {
 	fmt.Println(dir)
 	viper.SetDefault("server.host", "localhost")
 	viper.SetDefault("server.port", "8022")
-	viper.SetDefault("database.sqlite.file", "biz/dal/database/refined.db")
+	viper.SetDefault("database.sql.file", "biz/dal/database/refined.db")
 	viper.SetDefault("jwt.secretkey", "F54d|CX1v")
 
 	err = viper.ReadInConfig()

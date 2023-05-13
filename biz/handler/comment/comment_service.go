@@ -3,7 +3,7 @@
 package comment
 
 import (
-	"Refined_service/biz/dal/sqlite"
+	"Refined_service/biz/dal/sql"
 	"Refined_service/biz/model/comment"
 	"context"
 	"net/http"
@@ -33,7 +33,7 @@ func UpdateComment(ctx context.Context, c *app.RequestContext) {
 	cm.UserID = req.UserID
 	cm.Date = req.Date
 
-	if err = sqlite.Update[comment.Comment](cm.ID, cm); err != nil {
+	if err = sql.Update[comment.Comment](cm.ID, cm); err != nil {
 		c.JSON(http.StatusOK, &comment.UpdateCommentResponse{Code: comment.Code_DbError, Msg: err.Error()})
 		return
 	}
@@ -53,7 +53,7 @@ func DeleteComment(ctx context.Context, c *app.RequestContext) {
 		c.JSON(consts.StatusOK, &comment.DeleteCommentResponse{Code: comment.Code_ParamInvalid, Msg: err.Error()})
 		return
 	}
-	if err = sqlite.Delete[comment.Comment](req.ID); err != nil {
+	if err = sql.Delete[comment.Comment](req.ID); err != nil {
 		c.JSON(consts.StatusOK, &comment.DeleteCommentResponse{Code: comment.Code_DbError, Msg: err.Error()})
 		return
 	}
@@ -75,7 +75,7 @@ func QueryComment(ctx context.Context, c *app.RequestContext) {
 		c.JSON(consts.StatusOK, &comment.QueryCommentResponse{Code: comment.Code_ParamInvalid, Msg: err.Error()})
 		return
 	}
-	comments, total, err := sqlite.Query[comment.Comment]("post_id = ?", *req.ID)
+	comments, total, err := sql.Query[comment.Comment]("post_id = ?", *req.ID)
 	if err != nil {
 		c.JSON(consts.StatusOK, &comment.QueryCommentResponse{Code: comment.Code_DbError, Msg: err.Error()})
 		return
@@ -98,7 +98,7 @@ func CreateComment(ctx context.Context, c *app.RequestContext) {
 		c.JSON(consts.StatusOK, &comment.CreateCommentResponse{Code: comment.Code_ParamInvalid, Msg: err.Error()})
 		return
 	}
-	if err = sqlite.Create[comment.Comment]([]*comment.Comment{
+	if err = sql.Create[comment.Comment]([]*comment.Comment{
 		{
 			Author:  req.Author,
 			Content: req.Content,

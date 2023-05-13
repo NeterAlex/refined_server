@@ -3,7 +3,7 @@
 package post
 
 import (
-	"Refined_service/biz/dal/sqlite"
+	"Refined_service/biz/dal/sql"
 	"Refined_service/biz/model/post"
 	"context"
 	"net/http"
@@ -43,7 +43,7 @@ func UpdatePost(ctx context.Context, c *app.RequestContext) {
 		c.JSON(http.StatusOK, &post.UpdatePostResponse{Code: post.Code_ParamInvalid, Msg: err.Error()})
 		return
 	}
-	if err = sqlite.Update[post.Post](id, p); err != nil {
+	if err = sql.Update[post.Post](id, p); err != nil {
 		c.JSON(http.StatusOK, &post.UpdatePostResponse{Code: post.Code_DbError, Msg: err.Error()})
 		return
 	}
@@ -62,7 +62,7 @@ func DeletePost(ctx context.Context, c *app.RequestContext) {
 		c.JSON(consts.StatusOK, &post.DeletePostResponse{Code: post.Code_ParamInvalid, Msg: err.Error()})
 		return
 	}
-	if err = sqlite.Delete[post.Post](req.ID); err != nil {
+	if err = sql.Delete[post.Post](req.ID); err != nil {
 		c.JSON(consts.StatusOK, &post.DeletePostResponse{Code: post.Code_DbError, Msg: err.Error()})
 		return
 	}
@@ -86,9 +86,9 @@ func QueryPost(ctx context.Context, c *app.RequestContext) {
 	var posts []*post.Post
 	var total int64
 	if req.ID == "0" {
-		posts, total, err = sqlite.QueryPreloadAll[post.Post](req.Page, req.PageSize, "Comments")
+		posts, total, err = sql.QueryPreloadAll[post.Post](req.Page, req.PageSize, "Comments")
 	} else {
-		posts, total, err = sqlite.Query[post.Post]("id = ?", req.ID)
+		posts, total, err = sql.Query[post.Post]("id = ?", req.ID)
 	}
 	if err != nil {
 		c.JSON(consts.StatusOK, &post.QueryPostResponse{Code: post.Code_DbError, Msg: err.Error()})
@@ -115,7 +115,7 @@ func CreatePost(ctx context.Context, c *app.RequestContext) {
 		c.JSON(consts.StatusOK, &post.CreatePostResponse{Code: post.Code_ParamInvalid, Msg: err.Error()})
 		return
 	}
-	if err = sqlite.Create[post.Post]([]*post.Post{
+	if err = sql.Create[post.Post]([]*post.Post{
 		{
 			Title:    req.Title,
 			Content:  req.Content,
@@ -146,7 +146,7 @@ func ViewPost(ctx context.Context, c *app.RequestContext) {
 		c.JSON(consts.StatusOK, &post.ViewPostResponse{Code: post.Code_ParamInvalid, Msg: err.Error()})
 		return
 	}
-	if err = sqlite.CountPlus[post.Post]("id = ?", strconv.FormatInt(req.ID, 10), "viewed", 1); err != nil {
+	if err = sql.CountPlus[post.Post]("id = ?", strconv.FormatInt(req.ID, 10), "viewed", 1); err != nil {
 		c.JSON(consts.StatusOK, &post.ViewPostResponse{Code: post.Code_DbError, Msg: err.Error()})
 		return
 	}
@@ -158,7 +158,7 @@ func ViewPost(ctx context.Context, c *app.RequestContext) {
 func LatestPost(ctx context.Context, c *app.RequestContext) {
 	var res []*post.Post
 	var err error
-	if res, err = sqlite.QueryByOrder[post.Post]("id", "desc", 1); err != nil {
+	if res, err = sql.QueryByOrder[post.Post]("id", "desc", 1); err != nil {
 		c.JSON(consts.StatusOK, &post.LatestPostResponse{Code: post.Code_DbError, Msg: err.Error()})
 		return
 	}

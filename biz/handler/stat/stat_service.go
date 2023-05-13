@@ -3,7 +3,7 @@
 package stat
 
 import (
-	"Refined_service/biz/dal/sqlite"
+	"Refined_service/biz/dal/sql"
 	"Refined_service/biz/model/comment"
 	"Refined_service/biz/model/post"
 	stat "Refined_service/biz/model/stat"
@@ -23,19 +23,19 @@ func QueryStat(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 	res := new(stat.Stat)
-	if res.CommentCount, err = sqlite.Count[comment.Comment](); err != nil {
+	if res.CommentCount, err = sql.Count[comment.Comment](); err != nil {
 		c.JSON(consts.StatusOK, &stat.QueryStatResponse{Code: stat.Code_DbError, Msg: err.Error()})
 		return
 	}
-	if res.PostCount, err = sqlite.Count[post.Post](); err != nil {
+	if res.PostCount, err = sql.Count[post.Post](); err != nil {
 		c.JSON(consts.StatusOK, &stat.QueryStatResponse{Code: stat.Code_DbError, Msg: err.Error()})
 		return
 	}
-	if res.UserCount, err = sqlite.Count[user.User](); err != nil {
+	if res.UserCount, err = sql.Count[user.User](); err != nil {
 		c.JSON(consts.StatusOK, &stat.QueryStatResponse{Code: stat.Code_DbError, Msg: err.Error()})
 		return
 	}
-	if res.TotalViewed, err = sqlite.SumColumn[post.Post]("viewed"); err != nil {
+	if res.TotalViewed, err = sql.SumColumn[post.Post]("viewed"); err != nil {
 		c.JSON(consts.StatusOK, &stat.QueryStatResponse{Code: stat.Code_DbError, Msg: err.Error()})
 		return
 	}

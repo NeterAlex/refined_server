@@ -3,7 +3,7 @@
 package user
 
 import (
-	"Refined_service/biz/dal/sqlite"
+	"Refined_service/biz/dal/sql"
 	"Refined_service/biz/pack"
 	"context"
 	"net/http"
@@ -40,7 +40,7 @@ func UpdateUser(ctx context.Context, c *app.RequestContext) {
 	if req.Password != nil && *req.Password != "" {
 		u.Password = pack.HashSHA256(*req.Password)
 	}
-	if err = sqlite.Update[user.User](u.ID, u); err != nil {
+	if err = sql.Update[user.User](u.ID, u); err != nil {
 		c.JSON(http.StatusOK, &user.UpdateUserResponse{Code: user.Code_DbError, Msg: err.Error()})
 		return
 	}
@@ -60,7 +60,7 @@ func DeleteUser(ctx context.Context, c *app.RequestContext) {
 		c.JSON(consts.StatusOK, &user.DeleteUserResponse{Code: user.Code_ParamInvalid, Msg: err.Error()})
 		return
 	}
-	if err = sqlite.Delete[user.User](req.ID); err != nil {
+	if err = sql.Delete[user.User](req.ID); err != nil {
 		c.JSON(consts.StatusOK, &user.DeleteUserResponse{Code: user.Code_DbError, Msg: err.Error()})
 		return
 	}
@@ -85,9 +85,9 @@ func QueryUser(ctx context.Context, c *app.RequestContext) {
 	var users []*user.User
 	var total int64
 	if req.ID == "0" {
-		users, total, err = sqlite.QueryAllExclude[user.User]("password", req.Page, req.GetPageSize())
+		users, total, err = sql.QueryAllExclude[user.User]("password", req.Page, req.GetPageSize())
 	} else {
-		users, total, err = sqlite.QueryExclude[user.User]("id = ?", req.ID, "password")
+		users, total, err = sql.QueryExclude[user.User]("id = ?", req.ID, "password")
 	}
 
 	if err != nil {
@@ -114,7 +114,7 @@ func CreateUser(ctx context.Context, c *app.RequestContext) {
 		c.JSON(consts.StatusOK, &user.CreateUserResponse{Code: user.Code_ParamInvalid, Msg: err.Error()})
 		return
 	}
-	if err = sqlite.Create[user.User]([]*user.User{
+	if err = sql.Create[user.User]([]*user.User{
 		{
 			Username: req.Username,
 			Password: pack.HashSHA256(req.Password),

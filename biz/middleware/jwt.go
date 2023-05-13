@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"Refined_service/biz/dal/sqlite"
+	"Refined_service/biz/dal/sql"
 	"Refined_service/biz/model/user"
 	"Refined_service/biz/pack"
 	"context"
@@ -47,7 +47,7 @@ func AuthInit(secretKey string) *jwt.HertzJWTMiddleware {
 
 			//Check if username matches password
 			if pack.CheckAuthValid(username, password) {
-				u, _, err := sqlite.Query[user.User]("username = ?", username)
+				u, _, err := sql.Query[user.User]("username = ?", username)
 				if err != nil {
 					return User{}, nil
 				}

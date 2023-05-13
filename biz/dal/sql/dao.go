@@ -1,28 +1,24 @@
-package sqlite
+package sql
 
 import (
-	"Refined_service/biz/model/comment"
-	"Refined_service/biz/model/post"
-	"Refined_service/biz/model/stat"
-	"Refined_service/biz/model/user"
 	"gorm.io/gorm"
 )
 
-func Create[T comment.Comment | post.Post | user.User | stat.Stat](elements []*T) error {
+func Create[T any](elements []*T) error {
 	return DB.Create(elements).Error
 }
 
-func Delete[T comment.Comment | post.Post | user.User | stat.Stat](id int64) error {
+func Delete[T any](id int64) error {
 	var t T
 	return DB.Where("id = ?", id).Delete(&t).Error
 }
 
-func Update[T comment.Comment | post.Post | user.User | stat.Stat](id int64, element *T) error {
+func Update[T any](id int64, element *T) error {
 	var t T
 	return DB.Model(t).Where("id = ?", id).Updates(element).Error
 }
 
-func Count[T comment.Comment | post.Post | user.User | stat.Stat]() (int64, error) {
+func Count[T any]() (int64, error) {
 	var t T
 	var total int64
 	if err := DB.Model(&t).Count(&total).Error; err != nil {
@@ -31,7 +27,7 @@ func Count[T comment.Comment | post.Post | user.User | stat.Stat]() (int64, erro
 	return total, nil
 }
 
-func Query[T comment.Comment | post.Post | user.User | stat.Stat](where string, value string) ([]*T, int64, error) {
+func Query[T any](where string, value string) ([]*T, int64, error) {
 	var t T
 	db := DB.Model(t)
 	if where != "" && value != "" {
@@ -48,7 +44,7 @@ func Query[T comment.Comment | post.Post | user.User | stat.Stat](where string, 
 	return res, total, nil
 }
 
-func QueryExclude[T comment.Comment | post.Post | user.User | stat.Stat](where, value, exclude string) ([]*T, int64, error) {
+func QueryExclude[T any](where, value, exclude string) ([]*T, int64, error) {
 	var t T
 	db := DB.Model(t)
 	if where != "" && value != "" {
@@ -65,7 +61,7 @@ func QueryExclude[T comment.Comment | post.Post | user.User | stat.Stat](where, 
 	return res, total, nil
 }
 
-func QueryByOrder[T comment.Comment | post.Post | user.User | stat.Stat](key, order string, limit int) ([]*T, error) {
+func QueryByOrder[T any](key, order string, limit int) ([]*T, error) {
 	var t T
 	db := DB.Model(t)
 	var res []*T
@@ -75,21 +71,7 @@ func QueryByOrder[T comment.Comment | post.Post | user.User | stat.Stat](key, or
 	return res, nil
 }
 
-func QueryAll[T comment.Comment | post.Post | user.User | stat.Stat](page, pageSize int64) ([]*T, int64, error) {
-	var t T
-	db := DB.Model(t)
-	var total int64
-	if err := db.Count(&total).Error; err != nil {
-		return nil, 0, err
-	}
-	var res []*T
-	if err := db.Limit(int(pageSize)).Offset(int(pageSize * (page - 1))).Find(&res).Error; err != nil {
-		return nil, 0, err
-	}
-	return res, total, nil
-}
-
-func QueryPreloadAll[T comment.Comment | post.Post | user.User | stat.Stat](page, pageSize int64, preload string) ([]*T, int64, error) {
+func QueryPreloadAll[T any](page, pageSize int64, preload string) ([]*T, int64, error) {
 	var t T
 	db := DB.Model(t)
 	var total int64
@@ -103,7 +85,7 @@ func QueryPreloadAll[T comment.Comment | post.Post | user.User | stat.Stat](page
 	return res, total, nil
 }
 
-func QueryAllExclude[T comment.Comment | post.Post | user.User | stat.Stat](exclude string, page, pageSize int64) ([]*T, int64, error) {
+func QueryAllExclude[T any](exclude string, page, pageSize int64) ([]*T, int64, error) {
 	var t T
 	db := DB.Model(t)
 	var total int64
@@ -117,12 +99,12 @@ func QueryAllExclude[T comment.Comment | post.Post | user.User | stat.Stat](excl
 	return res, total, nil
 }
 
-func CountPlus[T comment.Comment | post.Post | user.User | stat.Stat](where, whereValue, item string, count int64) error {
+func CountPlus[T any](where, whereValue, item string, count int64) error {
 	var t T
 	return DB.Model(t).Where(where, whereValue).UpdateColumn(item, gorm.Expr(item+" + ?", count)).Error
 }
 
-func SumColumn[T comment.Comment | post.Post | user.User | stat.Stat](column string) (int64, error) {
+func SumColumn[T any](column string) (int64, error) {
 	var t T
 	var result []int64
 	var sum int64 = 0
