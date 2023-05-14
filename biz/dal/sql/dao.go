@@ -18,15 +18,6 @@ func Update[T any](id int64, element *T) error {
 	return DB.Model(t).Where("id = ?", id).Updates(element).Error
 }
 
-func Count[T any]() (int64, error) {
-	var t T
-	var total int64
-	if err := DB.Model(&t).Count(&total).Error; err != nil {
-		return 0, err
-	}
-	return total, nil
-}
-
 func Query[T any](where string, value string) ([]*T, int64, error) {
 	var t T
 	db := DB.Model(t)
@@ -42,6 +33,15 @@ func Query[T any](where string, value string) ([]*T, int64, error) {
 		return nil, 0, err
 	}
 	return res, total, nil
+}
+
+func Count[T any]() (int64, error) {
+	var t T
+	var total int64
+	if err := DB.Model(&t).Count(&total).Error; err != nil {
+		return 0, err
+	}
+	return total, nil
 }
 
 func QueryExclude[T any](where, value, exclude string) ([]*T, int64, error) {
